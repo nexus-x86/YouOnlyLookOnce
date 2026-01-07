@@ -1,12 +1,25 @@
 from ultralytics import YOLO
 import cv2
 import pickle
-
+import pandas as pd
 
 class BallTracker:
     def __init__(self, model_path):
         self.model = YOLO(model_path)
 
+
+    def interpolate_ball_positions(self, ball_positions):
+        ball_positions = [x.get(1,[]) for x in ball_positions]
+        # convert list into pandas data frame
+        df_ball_positions = pd.DataFrame(ball_positions, columns=['x1','y1','x2','y2'])
+
+        # interpolate missing values
+        df_ball_positions = df_ball_positions.interpolate()
+        df_ball_positions = df_ball_positions.bfill()
+
+        ball_positions = [{1:x} for x in df_ball_positions.to_numpy().tolist()]
+        
+        return ball_positions
 
     def detect_frame(self, frame):
         ## Note: Remove device = 'mps' if running on anything that isn't a M-series macbook.
