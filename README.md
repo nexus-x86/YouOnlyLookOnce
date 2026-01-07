@@ -1,4 +1,8 @@
 # YouOnlyLookOnce
-<video width="1920" height="1080" controls>
-  <source src="./demo.mp4" type="video/mp4">
-</video>
+
+![demo](./image.png)
+
+
+https://github.com/nexus-x86/YouOnlyLookOnce/blob/main/demo.mp4
+
+See above to view a quick demo.
