@@ -4,22 +4,26 @@ from trackers import PlayerTracker, BallTracker
 from court_line_detector import CourtLineDetector
 import cv2
 
+# The training data struggles with identifying the court lines on clay courts.
+testing = 2
+readFromData = True
+
 def main():
     # Read Video
-    input_video_path = "input_videos/input_video2.mp4"
+    input_video_path = f"input_videos/input_video{testing}.mp4"
     video_frames = read_video(input_video_path)
 
     # Detect Players and ball
     player_tracker = PlayerTracker(model_path='yolov8x') 
     player_detections = player_tracker.detect_frames(video_frames,
-                                                     read_from_stub=True,
-                                                     stub_path="tracker_stubs/player_detections.pkl")
+                                                     read_from_stub=readFromData,
+                                                     stub_path=f"tracker_stubs/player_detections{testing}.pkl")
     
     
     ball_tracker = BallTracker(model_path='models/yolov5_best.pt')
     ball_detections = ball_tracker.detect_frames(video_frames,
-                                                     read_from_stub=True,
-                                                     stub_path="tracker_stubs/ball_detections.pkl")
+                                                     read_from_stub=readFromData,
+                                                     stub_path=f"tracker_stubs/ball_detections{testing}.pkl")
     
     ball_detections = ball_tracker.interpolate_ball_positions(ball_detections)
 
@@ -45,7 +49,7 @@ def main():
     for i, frame in enumerate(output_video_frames):
         cv2.putText(frame, f"Frame: {i}", (10,30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
-    save_video(output_video_frames, "output_videos/output_video2.avi")
+    save_video(output_video_frames, f"output_videos/output_video{testing}.avi")
 
 if __name__ == "__main__":
     main()

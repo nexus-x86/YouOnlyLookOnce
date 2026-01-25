@@ -25,7 +25,8 @@ class PlayerTracker:
 
             min_distance = float('inf')
             for i in range(0, len(court_keypoints),2):
-                court_keypoint = (court_keypoints[1], court_keypoints[2])
+                court_keypoint = (court_keypoints[i], court_keypoints[i+1])
+
                 distance = measure_distance(player_center, court_keypoint)
                 if distance < min_distance:
                     min_distance = distance
@@ -36,10 +37,15 @@ class PlayerTracker:
 
         # Choose the first two tracks 
         chosen_players = [distances[0][0], distances[1][0]]
+        print(f"Chosen players {distances[0][0]} and {distances[1][0]}")
+        
+        for distance in distances:
+            print(f"Player {distance[0]} has distance {distance[1]}")
+        
         return chosen_players
 
     def detect_frame(self, frame):
-        results = self.model.track(frame, persist=True)[0]
+        results = self.model.track(frame, persist=True, device = 'mps')[0]
         id_name_dict = results.names
 
         player_dict = {}
